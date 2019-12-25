@@ -30,10 +30,14 @@
 #include <linux/suspend.h>
 #include <linux/syscore_ops.h>
 #include <linux/tick.h>
+#include <linux/fb.h>
 #ifdef CONFIG_SMP
 #include <linux/sched.h>
 #endif
 #include <trace/events/power.h>
+#define SCREEN_OFF_CEILING 633600
+
+bool display_status= true;
 
 static LIST_HEAD(cpufreq_policy_list);
 
@@ -707,9 +711,6 @@ static ssize_t store_##file_name					\
 {									\
 	int ret, temp;							\
 	struct cpufreq_policy new_policy;				\
-									\
-	if (&policy->object == &policy->min)				\
-		return count;						\
 									\
 	memcpy(&new_policy, policy, sizeof(*policy));			\
 	new_policy.min = policy->user_policy.min;			\
@@ -1981,6 +1982,10 @@ int __cpufreq_driver_target(struct cpufreq_policy *policy,
 	if (cpufreq_disabled())
 		return -ENODEV;
 
+	if (!display_status && target_freq > SCREEN_OFF_CEILING) {
+		target_freq = SCREEN_OFF_CEILING;
+	}
+	
 	/* Make sure that target_freq is within supported range */
 	if (target_freq > policy->max)
 		target_freq = policy->max;
