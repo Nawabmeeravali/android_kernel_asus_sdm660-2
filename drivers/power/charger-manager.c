@@ -675,9 +675,9 @@ static int cm_check_thermal_status(struct charger_manager *cm)
  */
 static bool _cm_monitor(struct charger_manager *cm)
 {
-	int temp_alrt;
+	int temp_alrt=0;
 
-	temp_alrt = cm_check_thermal_status(cm);
+	
 
 	/* It has been stopped already */
 	if (temp_alrt && cm->emergency_stop)
