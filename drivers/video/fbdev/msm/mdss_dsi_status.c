@@ -24,6 +24,7 @@
 #include <linux/kobject.h>
 #include <linux/string.h>
 #include <linux/sysfs.h>
+#include <linux/devfreq_boost.h>
 
 #include "mdss_fb.h"
 #include "mdss_dsi.h"
@@ -202,6 +203,7 @@ static int fb_event_callback(struct notifier_block *self,
 
 		switch (*blank) {
 		case FB_BLANK_UNBLANK:
+			devfreq_boost_kick_max(DEVFREQ_MSM_CPUBW, 1024);
 			schedule_delayed_work(&pdata->check_status,
 				msecs_to_jiffies(interval));
 			break;
