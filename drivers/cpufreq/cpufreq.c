@@ -37,7 +37,6 @@
 #include <trace/events/power.h>
 #define SCREEN_OFF_CEILING 633600
 
-bool display_status= true;
 
 static LIST_HEAD(cpufreq_policy_list);
 
